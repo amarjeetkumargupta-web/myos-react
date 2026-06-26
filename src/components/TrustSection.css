@@ -1,0 +1,42 @@
+.trust-section {
+  padding: 20px 6% 80px;
+}
+.trust-card {
+  max-width: 1200px;
+  margin: auto;
+  background: #fff;
+  border-radius: 28px;
+  padding: 35px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.06);
+  border: 1px solid #eef2f7;
+}
+.trust-item {
+  text-align: center;
+}
+.trust-item h2 {
+  font-size: 2.5rem;
+  color: #2563eb;
+  margin-bottom: 10px;
+}
+.trust-item p {
+  color: #64748b;
+  font-weight: 500;
+}
+.trust-divider {
+  width: 1px;
+  height: 60px;
+  background: #e2e8f0;
+}
+@media (max-width: 900px) {
+  .trust-card {
+    flex-direction: column;
+    gap: 25px;
+  }
+  .trust-divider {
+    width: 80%;
+    height: 1px;
+  }
+}

@@ -1,0 +1,10 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+body {
+  background: radial-gradient(circle at top left, #eef4ff, #f8fafc 45%);
+  color: #111827;
+}
