@@ -15,13 +15,13 @@ import {
 } from 'firebase/firestore';
 import './Dashboard.css';
 
-function Dashboard() {
+function Dashboard({ onLogout }) {
   const { user } = useAuth();
   const [groups, setGroups] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('groups'); // 'groups' | 'subjects' | 'settings'
+  const [activeTab, setActiveTab] = useState('groups');
 
   // -------- FETCH GROUPS (Real-time) --------
   useEffect(() => {
@@ -71,13 +71,11 @@ function Dashboard() {
   const handleDeleteGroup = async (groupId) => {
     if (!confirm('Delete this group and all its subjects?')) return;
     try {
-      // Delete all subjects in this group first
       const subQuery = query(collection(db, 'subjects'), where('groupId', '==', groupId));
       const subSnapshot = await getDocs(subQuery);
       subSnapshot.forEach(async (docSnap) => {
         await deleteDoc(doc(db, 'subjects', docSnap.id));
       });
-      // Delete the group
       await deleteDoc(doc(db, 'groups', groupId));
       if (selectedGroup?.id === groupId) setSelectedGroup(null);
       alert('Group deleted!');
@@ -120,7 +118,7 @@ function Dashboard() {
     }
   };
 
-  // -------- UPDATE PAYMENT (Price per person) --------
+  // -------- UPDATE PAYMENT --------
   const handleUpdatePrice = async (groupId, currentPrice) => {
     const newPrice = prompt('Enter amount you want to pay per person (₹):', currentPrice || '0');
     if (newPrice === null) return;
@@ -139,12 +137,13 @@ function Dashboard() {
     }
   };
 
-  // -------- LOGOUT --------
+  // -------- LOGOUT (with callback) --------
   const handleLogout = async () => {
     await signOut(auth);
+    if (onLogout) onLogout();
   };
 
-  // -------- RENDER GROUPS LIST --------
+  // -------- RENDER GROUPS TAB --------
   const renderGroupsTab = () => (
     <div className="dashboard-tab">
       <div className="tab-header">
@@ -219,7 +218,7 @@ function Dashboard() {
     </div>
   );
 
-  // -------- RENDER SETTINGS (Payment) TAB --------
+  // -------- RENDER SETTINGS TAB --------
   const renderSettingsTab = () => {
     const group = selectedGroup;
     if (!group) {
@@ -256,7 +255,6 @@ function Dashboard() {
   // -------- MAIN DASHBOARD LAYOUT --------
   return (
     <div className="dashboard-container">
-      {/* Top Bar */}
       <div className="dashboard-topbar">
         <h1>👋 Welcome, {user?.displayName || 'Parent'}!</h1>
         <div className="user-info">
@@ -265,9 +263,7 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="dashboard-body">
-        {/* Sidebar */}
         <div className="dashboard-sidebar">
           <button
             className={`sidebar-btn ${activeTab === 'groups' ? 'active' : ''}`}
@@ -291,7 +287,6 @@ function Dashboard() {
           </button>
         </div>
 
-        {/* Content Area */}
         <div className="dashboard-content">
           {activeTab === 'groups' && renderGroupsTab()}
           {activeTab === 'subjects' && renderSubjectsTab()}
@@ -302,4 +297,5 @@ function Dashboard() {
   );
 }
 
+// ✅ THIS IS THE IMPORTANT LINE – make sure it's at the bottom!
 export default Dashboard;

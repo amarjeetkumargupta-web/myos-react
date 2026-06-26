@@ -1,14 +1,18 @@
 import React from 'react';
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithRedirect } from 'firebase/auth';
 import { auth, provider } from '../firebase/firebase';
 import './Navbar.css';
 import logo from '../assets/logo.png';
 
-function Navbar() {
+function Navbar({ onLogin }) {
   const handleLogin = async () => {
+    // Tell the parent component we are about to log in
+    if (onLogin) onLogin();
+
     try {
-      await signInWithPopup(auth, provider);
+      await signInWithRedirect(auth, provider);
     } catch (error) {
+      console.error('Login error:', error.message);
       alert('Login failed: ' + error.message);
     }
   };
