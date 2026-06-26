@@ -1,8 +1,18 @@
 import React from 'react';
+import { signInWithPopup } from 'firebase/auth';
+import { auth, provider } from '../firebase/firebase';
 import './Navbar.css';
 import logo from '../assets/logo.png';
 
 function Navbar() {
+  const handleLogin = async () => {
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      alert('Login failed: ' + error.message);
+    }
+  };
+
   const scrollTo = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -19,8 +29,8 @@ function Navbar() {
         <li><a href="#faq" onClick={(e) => { e.preventDefault(); scrollTo('faq'); }}>FAQ</a></li>
       </ul>
       <div className="nav-buttons">
-        <button className="login-btn" onClick={() => alert('Login page coming soon!')}>Login</button>
-        <button className="primary-btn" onClick={() => scrollTo('pricing')}>Get Started</button>
+        <button className="login-btn" onClick={handleLogin}>Login</button>
+        <button className="primary-btn" onClick={() => scrollTo('how-it-works')}>Get Started</button>
       </div>
     </nav>
   );
